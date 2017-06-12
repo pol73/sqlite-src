@@ -125,18 +125,27 @@ OPTIONS_GROUP=
 
 # I'm collect this as group, amalgamation or external extensions, don't included into other groups.
 OPTIONS_GROUP+=		EXTG
-OPTIONS_GROUP_EXTG=	RBU SESSION CSV
+OPTIONS_GROUP_EXTG=	CSV FILEIO RBU REGEXP SESSION SPELLFIX
 OPTIONS_DEFAULT+=
 EXTG_DESC=		Amalgamation or external extensions
-# https://www.sqlite.org/rbu.html
-RBU_DESC=		Enable the Resumable Bulk Update
-RBU_CPPFLAGS=		-DSQLITE_ENABLE_RBU=1
-# https://www.sqlite.org/sessionintro.html
-SESSION_DESC=		Enable the SESSION extension
-SESSION_CONFIGURE_ON=	--enable-session
 # https://www.sqlite.org/csv.html
 CSV_DESC=		Reading CSV file as virtual table
 CSV_IMPLIES=		EXTENSION
+# https://www.sqlite.org/cli.html#file_i_o_functions
+FILEIO_DESC=		Presents external file as a BLOB
+FILEIO_IMPLIES=		EXTENSION
+# https://www.sqlite.org/rbu.html
+RBU_DESC=		Enable the Resumable Bulk Update
+RBU_CPPFLAGS=		-DSQLITE_ENABLE_RBU=1
+# https://www.sqlite.org/lang_expr.html and search "regexp"
+REGEXP_DESC=		Added a regexp() function
+REGEXP_IMPLIES=		EXTENSION
+# https://www.sqlite.org/sessionintro.html
+SESSION_DESC=		Enable the SESSION extension
+SESSION_CONFIGURE_ON=	--enable-session
+# https://www.sqlite.org/spellfix1.html
+SPELLFIX_DESC=		Used to suggest corrections
+SPELLFIX_IMPLIES=	EXTENSION
 
 # https://www.sqlite.org/fts3.html
 # https://www.sqlite.org/fts5.html
@@ -275,6 +284,15 @@ post-configure:
 post-build-CSV-on:
 	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/csv.c -o ${WRKSRC}/csv.so
 
+post-build-FILEIO-on:
+	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/fileio.c -o ${WRKSRC}/fileio.so
+
+post-build-REGEXP-on:
+	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/regexp.c -o ${WRKSRC}/regexp.so
+
+post-build-SPELLFIX-on:
+	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/spellfix.c -o ${WRKSRC}/spellfix.so
+
 post-install:
 .if !defined(WITH_DEBUG) || defined(WITHOUT_DEBUG)
 	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/sqlite3
@@ -292,6 +310,18 @@ post-install-EXTENSION-off:
 post-install-CSV-on:
 	${MKDIR} ${STAGEDIR}${DATADIR}
 	${INSTALL_LIB} ${WRKSRC}/csv.so ${STAGEDIR}${DATADIR}
+
+post-install-FILEIO-on:
+	${MKDIR} ${STAGEDIR}${DATADIR}
+	${INSTALL_LIB} ${WRKSRC}/fileio.so ${STAGEDIR}${DATADIR}
+
+post-install-REGEXP-on:
+	${MKDIR} ${STAGEDIR}${DATADIR}
+	${INSTALL_LIB} ${WRKSRC}/regexp.so ${STAGEDIR}${DATADIR}
+
+post-install-SPELLFIX-on:
+	${MKDIR} ${STAGEDIR}${DATADIR}
+	${INSTALL_LIB} ${WRKSRC}/spellfix.so ${STAGEDIR}${DATADIR}
 
 # for compares with checksum from of the site
 sha1: fetch

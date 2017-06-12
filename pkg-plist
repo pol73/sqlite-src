@@ -8,4 +8,7 @@ lib/libsqlite3.a
 %%TCL_EXT%%lib/tcl%%TCL_VER%%/sqlite3/libtclsqlite3.so
 %%TCL_EXT%%lib/tcl%%TCL_VER%%/sqlite3/pkgIndex.tcl
 %%CSV%%%%DATADIR%%/csv.so
+%%FILEIO%%%%DATADIR%%/fileio.so
+%%REGEXP%%%%DATADIR%%/regexp.so
+%%SPELLFIX%%%%DATADIR%%/spellfix.so
 libdata/pkgconfig/sqlite3.pc
