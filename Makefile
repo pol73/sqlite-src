@@ -94,7 +94,7 @@ STMT_CPPFLAGS=		-DSQLITE_ENABLE_STMT_SCANSTATUS=1
 OPTIONS_DEFINE+=	TCL_EXT
 OPTIONS_DEFAULT+=	TCL_EXT # It's SQLite default
 TCL_EXT_DESC=		Do build and install TCL extension
-TCL_EXT_USES=		tcl:,run
+TCL_EXT_USES=		tcl:,tea
 TCL_EXT_USES_OFF=	tcl:,build
 TCL_EXT_CONFIGURE_OFF=	--disable-tcl
 PLIST_SUB+=		TCL_VER=${TCL_VER}
@@ -229,12 +229,11 @@ OPTIONS_SINGLE_RL=	OFF_RL LIBEDIT READLINE
 OPTIONS_DEFAULT+=	READLINE  # It's SQLite default
 RL_DESC=		Library is used to edit the command line
 OFF_RL_DESC=		Command line without editing
-OFF_RL_CONFIGURE_ON=	--disable-readline # disable editline/readline support
+OFF_RL_CONFIGURE_ON=	--disable-readline --disable-editline # disable editline/readline support
 LIBEDIT_CONFIGURE_ON=	--enable-editline # enable BSD editline support
 LIBEDIT_USES=		libedit
 READLINE_USES=		readline # enable GNU readline support
-READLINE_LDFLAGS=	-lreadline
-#READLINE_CONFIGURE_ON=	"--with-readline-inc=${LOCALBASE}/include --with-readline-lib=${LOCALBASE}/lib"
+READLINE_CONFIGURE_ON=	--disable-editline
 
 # ===> OPTIONS_RADIO
 OPTIONS_RADIO=
