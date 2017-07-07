@@ -327,6 +327,6 @@ sha1: fetch
 	@sha1 ${DISTDIR}/${ALLFILES}
 
 test: build
-	[ -n "${WRKSRC}" ] && cd ${WRKSRC} && ( ${CHMOD} o+w . && su -m nobody -c "${MAKE} test"; ${CHMOD} o-w . )
+	[ -n "${WRKSRC}" ] && cd ${WRKSRC} && ( ${CHMOD} o+w . && su -m nobody -c "limits -n 1000 ${MAKE} test"; ${CHMOD} o-w . )
 
 .include <bsd.port.mk>
