@@ -11,4 +11,5 @@ lib/libsqlite3.a
 %%FILEIO%%%%DATADIR%%/fileio.so
 %%REGEXP%%%%DATADIR%%/regexp.so
 %%SPELLFIX%%%%DATADIR%%/spellfix.so
+%%UNIONVTAB%%%%DATADIR%%/unionvtab.so
 libdata/pkgconfig/sqlite3.pc

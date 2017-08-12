@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	sqlite
-PORTVERSION=	3.19.3
+PORTVERSION=	3.20.0
 CATEGORIES=	local databases
 MASTER_SITES=	https://www.sqlite.org/2017/ http://www2.sqlite.org/2017/ http://www3.sqlite.org/2017/
 DISTNAME=	${PORTNAME}-src-${PORTVERSION:C/\.([[:digit:]])[[:>:]]/0\1/g:S/.//g}00
@@ -125,7 +125,7 @@ OPTIONS_GROUP=
 
 # I'm collect this as group, amalgamation or external extensions, don't included into other groups.
 OPTIONS_GROUP+=		EXTG
-OPTIONS_GROUP_EXTG=	CSV FILEIO RBU REGEXP SESSION SPELLFIX
+OPTIONS_GROUP_EXTG=	CSV FILEIO RBU REGEXP SESSION SPELLFIX STMTVTAB UNIONVTAB
 OPTIONS_DEFAULT+=
 EXTG_DESC=		Amalgamation or external extensions
 # https://www.sqlite.org/csv.html
@@ -146,6 +146,12 @@ SESSION_CONFIGURE_ON=	--enable-session
 # https://www.sqlite.org/spellfix1.html
 SPELLFIX_DESC=		Used to suggest corrections
 SPELLFIX_IMPLIES=	EXTENSION
+# https://www.sqlite.org/stmt.html
+STMTVTAB_DESC=		Information about all prepared statements
+STMTVTAB_CPPFLAGS=	-DSQLITE_ENABLE_STMTVTAB=1
+# https://www.sqlite.org/unionvtab.html
+UNIONVTAB_DESC=		UNION virtual table
+UNIONVTAB_IMPLIES=	EXTENSION
 
 # https://www.sqlite.org/fts3.html
 # https://www.sqlite.org/fts5.html
@@ -168,6 +174,7 @@ FTS3_PARENTHESIS_CPPFLAGS=	-DSQLITE_ENABLE_FTS3_PARENTHESIS=1
 FTS3_TOKEN_IMPLIES=	FTS3
 FTS3_TOKEN_CPPFLAGS=	-DSQLITE_ENABLE_FTS3_TOKENIZER=1
 FTS4_CONFIGURE_ON=	--enable-fts4
+FTS4_IMPLIES=		FTS3 # used by www/firefox and mail/thunderbird
 FTS5_CONFIGURE_ON=	--enable-fts5
 
 # https://www.sqlite.org/rtree.html
@@ -292,6 +299,9 @@ post-build-REGEXP-on:
 post-build-SPELLFIX-on:
 	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/spellfix.c -o ${WRKSRC}/spellfix.so
 
+post-build-UNIONVTAB-on:
+	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/unionvtab.c -o ${WRKSRC}/unionvtab.so
+
 post-install:
 .if !defined(WITH_DEBUG) || defined(WITHOUT_DEBUG)
 	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/sqlite3
@@ -321,6 +331,10 @@ post-install-REGEXP-on:
 post-install-SPELLFIX-on:
 	${MKDIR} ${STAGEDIR}${DATADIR}
 	${INSTALL_LIB} ${WRKSRC}/spellfix.so ${STAGEDIR}${DATADIR}
+
+post-install-UNIONVTAB-on:
+	${MKDIR} ${STAGEDIR}${DATADIR}
+	${INSTALL_LIB} ${WRKSRC}/unionvtab.so ${STAGEDIR}${DATADIR}
 
 # for compares with checksum from of the site
 sha1: fetch
