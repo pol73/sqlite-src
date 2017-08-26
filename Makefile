@@ -274,8 +274,6 @@ CPPFLAGS+=		-DSQLITE_DEFAULT_FILE_PERMISSIONS=${DEFAULT_FILE_PERMISSIONS}
 # enable debugging & verbose explain
 .if defined(WITH_DEBUG) && !defined(WITHOUT_DEBUG)
 CONFIGURE_ARGS+=	--enable-debug
-.else
-CFLAGS+=		-Os
 .endif
 
 .include <bsd.port.options.mk>
