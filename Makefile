@@ -336,7 +336,11 @@ post-install-UNIONVTAB-on:
 
 # for compares with checksum from of the site
 sha1: fetch
+.if defined(SHA1) && !empty(SHA1)
+	@sha1 -c ${SHA1} ${DISTDIR}/${ALLFILES}
+.else
 	@sha1 ${DISTDIR}/${ALLFILES}
+.endif
 
 test: build
 	[ -n "${WRKSRC}" ] && cd ${WRKSRC} && ( ${CHMOD} o+w . && su -m nobody -c "limits -n 1000 ${MAKE} test"; ${CHMOD} o-w . )
