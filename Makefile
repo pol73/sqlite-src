@@ -123,35 +123,52 @@ UPD_DEL_LIMIT_CPPFLAGS=	-DSQLITE_ENABLE_UPDATE_DELETE_LIMIT=1
 # ===> OPTIONS_GROUP
 OPTIONS_GROUP=
 
-# I'm collect this as group, amalgamation or external extensions, don't included into other groups.
+# ===> I'm collect this as group, amalgamation or external extensions, don't included into other groups.
 OPTIONS_GROUP+=		EXTG
-OPTIONS_GROUP_EXTG=	CSV FILEIO RBU REGEXP SESSION SPELLFIX STMTVTAB UNIONVTAB
 OPTIONS_DEFAULT+=
 EXTG_DESC=		Amalgamation or external extensions
+
 # https://www.sqlite.org/csv.html
+OPTIONS_GROUP_EXTG+=	CSV
 CSV_DESC=		Reading CSV file as virtual table
 CSV_IMPLIES=		EXTENSION
+
 # https://www.sqlite.org/cli.html#file_i_o_functions
+OPTIONS_GROUP_EXTG+=	FILEIO
 FILEIO_DESC=		Presents external file as a BLOB
 FILEIO_IMPLIES=		EXTENSION
+
 # https://www.sqlite.org/rbu.html
+OPTIONS_GROUP_EXTG+=	RBU
 RBU_DESC=		Enable the Resumable Bulk Update
 RBU_CPPFLAGS=		-DSQLITE_ENABLE_RBU=1
+
 # https://www.sqlite.org/lang_expr.html and search "regexp"
+OPTIONS_GROUP_EXTG+=	REGEXP
 REGEXP_DESC=		Added a regexp() function
 REGEXP_IMPLIES=		EXTENSION
+
 # https://www.sqlite.org/sessionintro.html
+OPTIONS_GROUP_EXTG+=	SESSION
 SESSION_DESC=		Enable the SESSION extension
 SESSION_CONFIGURE_ON=	--enable-session
+
 # https://www.sqlite.org/spellfix1.html
+OPTIONS_GROUP_EXTG+=	SPELLFIX
 SPELLFIX_DESC=		Used to suggest corrections
 SPELLFIX_IMPLIES=	EXTENSION
+
 # https://www.sqlite.org/stmt.html
+OPTIONS_GROUP_EXTG+=	STMTVTAB
 STMTVTAB_DESC=		Information about all prepared statements
 STMTVTAB_CPPFLAGS=	-DSQLITE_ENABLE_STMTVTAB=1
+
 # https://www.sqlite.org/unionvtab.html
+OPTIONS_GROUP_EXTG+=	UNIONVTAB
 UNIONVTAB_DESC=		UNION virtual table
 UNIONVTAB_IMPLIES=	EXTENSION
+
+# ===> end of EXTG
 
 # https://www.sqlite.org/fts3.html
 # https://www.sqlite.org/fts5.html
