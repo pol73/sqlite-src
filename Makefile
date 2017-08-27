@@ -230,6 +230,17 @@ URI_AUTHORITY_DESC=	Convert URI into UNC and pass to OS
 URI_CPPFLAGS=		-DSQLITE_USE_URI=1
 URI_AUTHORITY_CPPFLAGS=	-DSQLITE_ALLOW_URI_AUTHORITY=1
 
+OPTIONS_GROUP+=		UTIL
+OPTIONS_GROUP_UTIL=	ANALYZER DBHASH SQLDIFF
+UTIL_DESC=		Additional utilities
+# https://www.sqlite.org/sqlanalyze.html
+# TCL already used in the build process.
+ANALYZER_DESC=		Displays how efficiently space is used
+# https://www.sqlite.org/dbhash.html
+DBHASH_DESC=		Hash on the content of the database
+# https://www.sqlite.org/sqldiff.html
+SQLDIFF_DESC=		Differences in content between databases
+
 # ===> OPTIONS_SINGLE
 OPTIONS_SINGLE=
 
@@ -284,7 +295,7 @@ STAT4_CPPFLAGS=		-DSQLITE_ENABLE_STAT4=1
 # ===> other definition
 
 # https://www.sqlite.org/compile.html#default_file_permissions
-.ifdef DEFAULT_FILE_PERMISSIONS
+.if defined(DEFAULT_FILE_PERMISSIONS) && !empty(DEFAULT_FILE_PERMISSIONS)
 CPPFLAGS+=		-DSQLITE_DEFAULT_FILE_PERMISSIONS=${DEFAULT_FILE_PERMISSIONS}
 .endif
 
@@ -302,8 +313,14 @@ post-configure:
 	@${ECHO_MSG} "===> LDFLAGS=${LDFLAGS}"
 	@${ECHO_MSG} "===> LIBS=${LIBS}"
 
+post-build-ANALYZER-on:
+	cd ${WRKSRC} && ${MAKE} sqlite3_analyzer
+
 post-build-CSV-on:
 	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/csv.c -o ${WRKSRC}/csv.so
+
+post-build-DBHASH-on:
+	cd ${WRKSRC} && ${MAKE} dbhash
 
 post-build-FILEIO-on:
 	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/fileio.c -o ${WRKSRC}/fileio.so
@@ -313,6 +330,9 @@ post-build-REGEXP-on:
 
 post-build-SPELLFIX-on:
 	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/spellfix.c -o ${WRKSRC}/spellfix.so
+
+post-build-SQLDIFF-on:
+	cd ${WRKSRC} && ${MAKE} sqldiff
 
 post-build-UNIONVTAB-on:
 	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/unionvtab.c -o ${WRKSRC}/unionvtab.so
@@ -331,9 +351,15 @@ post-install-TCL_EXT-on:
 post-install-EXTENSION-off:
 	${RM} ${STAGEDIR}${PREFIX}/include/sqlite3ext.h
 
+post-install-ANALYZER-on:
+	${INSTALL_PROGRAM} ${WRKSRC}/sqlite3_analyzer ${STAGEDIR}${PREFIX}/bin
+
 post-install-CSV-on:
 	${MKDIR} ${STAGEDIR}${DATADIR}
 	${INSTALL_LIB} ${WRKSRC}/csv.so ${STAGEDIR}${DATADIR}
+
+post-install-DBHASH-on:
+	${INSTALL_PROGRAM} ${WRKSRC}/dbhash ${STAGEDIR}${PREFIX}/bin/sqlite3_dbhash
 
 post-install-FILEIO-on:
 	${MKDIR} ${STAGEDIR}${DATADIR}
@@ -346,6 +372,9 @@ post-install-REGEXP-on:
 post-install-SPELLFIX-on:
 	${MKDIR} ${STAGEDIR}${DATADIR}
 	${INSTALL_LIB} ${WRKSRC}/spellfix.so ${STAGEDIR}${DATADIR}
+
+post-install-SQLDIFF-on:
+	${INSTALL_PROGRAM} ${WRKSRC}/sqldiff ${STAGEDIR}${PREFIX}/bin/sqlite3_sqldiff
 
 post-install-UNIONVTAB-on:
 	${MKDIR} ${STAGEDIR}${DATADIR}
