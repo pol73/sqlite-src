@@ -2,6 +2,7 @@
 
 PORTNAME=	sqlite
 PORTVERSION=	3.20.1
+PORTREVISION=	1
 CATEGORIES=	local databases
 MASTER_SITES=	https://www.sqlite.org/2017/ http://www2.sqlite.org/2017/ http://www3.sqlite.org/2017/
 DISTNAME=	${PORTNAME}-src-${PORTVERSION:C/\.([[:digit:]])[[:>:]]/0\1/g:S/.//g}00
@@ -179,6 +180,7 @@ OPTIONS_GROUP+=		FTS
 OPTIONS_GROUP_FTS=	FTS3 FTS3_PARENTHESIS FTS3_TOKEN FTS4 FTS5
 OPTIONS_DEFAULT+=	FTS4 # used by many ports
 OPTIONS_DEFAULT+=	FTS3_TOKEN # used by audio/clementine-player
+OPTIONS_DEFAULT+=	FTS5 # used by sysutils/tracker
 FTS_DESC=		Full-text search
 FTS3_DESC=		Enable the FTS3 extension
 FTS3_PARENTHESIS_DESC=	Modifies the query pattern parser in FTS3
