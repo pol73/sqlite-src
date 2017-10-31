@@ -1,8 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	sqlite
-PORTVERSION=	3.20.1
-PORTREVISION=	1
+PORTVERSION=	3.21.0
 CATEGORIES=	local databases
 MASTER_SITES=	https://www.sqlite.org/2017/ http://www2.sqlite.org/2017/ http://www3.sqlite.org/2017/
 DISTNAME=	${PORTNAME}-src-${PORTVERSION:C/\.([[:digit:]])[[:>:]]/0\1/g:S/.//g}00
@@ -18,6 +17,9 @@ USE_LDCONFIG=	yes
 
 CONFLICTS=	sqlite3-[0-9]*
 
+# A directories and files has requires write permission on a target: test.
+TEST_PERMISSION_CHANGED=	. tsrc .target_source sqlite3.c shell.c sqlite3ext.h sqlite3session.h .libs/sqlite3.o
+
 #  Length         |     |                   Length                |
 
 OPTIONS_SUB=		yes
@@ -30,6 +32,11 @@ OPTIONS_DEFAULT=	# Clean default options
 OPTIONS_DEFINE=		ARMOR
 ARMOR_DESC=		Detect misuse of the API
 ARMOR_CPPFLAGS=		-DSQLITE_ENABLE_API_ARMOR=1
+
+# https://sqlite.org/compile.html#enable_dbpage_vtab
+OPTIONS_DEFINE+=	DBPAGE
+DBPAGE_DESC=		Enable DBPAGE Virtual Table
+DBPAGE_CPPFLAGS=	-DSQLITE_ENABLE_DBPAGE_VTAB=1
 
 # https://www.sqlite.org/dbstat.html
 OPTIONS_DEFINE+=	DBSTAT
@@ -238,6 +245,7 @@ UTIL_DESC=		Additional utilities
 # https://www.sqlite.org/sqlanalyze.html
 # TCL already used in the build process.
 ANALYZER_DESC=		Displays how efficiently space is used
+ANALYZER_VARS=		TEST_PERMISSION_CHANGED+= sqlite3_analyzer.c
 # https://www.sqlite.org/dbhash.html
 DBHASH_DESC=		Hash on the content of the database
 # https://www.sqlite.org/sqldiff.html
@@ -390,7 +398,15 @@ sha1: fetch
 	@sha1 ${DISTDIR}/${ALLFILES}
 .endif
 
-test: build
-	[ -n "${WRKSRC}" ] && cd ${WRKSRC} && ( ${CHMOD} o+w . && su -m nobody -c "limits -n 1000 ${MAKE} test"; ${CHMOD} o-w . )
+testfixture: build
+	cd "${WRKSRC}" && ${MAKE} ${.TARGET}
+
+test quicktest: build testfixture
+	[ -d "${WRKSRC}" ] && ( \
+		cd "${WRKSRC}" && \
+		${CHMOD} o+w ${TEST_PERMISSION_CHANGED} && \
+		su -m nobody -c "limits -n 1000 ${MAKE} ${.TARGET}"; \
+		${CHMOD} o-w ${TEST_PERMISSION_CHANGED} \
+	)
 
 .include <bsd.port.mk>
