@@ -1,9 +1,9 @@
 # $FreeBSD$
 
 PORTNAME=	sqlite
-PORTVERSION=	3.21.0
+PORTVERSION=	3.22.0
 CATEGORIES=	local databases
-MASTER_SITES=	https://www.sqlite.org/2017/ http://www2.sqlite.org/2017/ http://www3.sqlite.org/2017/
+MASTER_SITES=	https://www.sqlite.org/2018/ http://www2.sqlite.org/2018/ http://www3.sqlite.org/2018/
 DISTNAME=	${PORTNAME}-src-${PORTVERSION:C/\.([[:digit:]])[[:>:]]/0\1/g:S/.//g}00
 
 MAINTAINER=	pavelivolkov@gmail.com
@@ -176,6 +176,11 @@ OPTIONS_GROUP_EXTG+=	UNIONVTAB
 UNIONVTAB_DESC=		UNION virtual table
 UNIONVTAB_IMPLIES=	EXTENSION
 
+# https://sqlite.org/zipfile.html
+OPTIONS_GROUP_EXTG+=	ZIPFILE
+ZIPFILE_DESC=		Read/write access to simple ZIP archives
+ZIPFILE_IMPLIES=	EXTENSION
+
 # ===> end of EXTG
 
 # https://www.sqlite.org/fts3.html
@@ -347,6 +352,9 @@ post-build-SQLDIFF-on:
 post-build-UNIONVTAB-on:
 	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/unionvtab.c -o ${WRKSRC}/unionvtab.so
 
+post-build-ZIPFILE-on:
+	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/zipfile.c -o ${WRKSRC}/zipfile.so
+
 post-install:
 .if !defined(WITH_DEBUG) || defined(WITHOUT_DEBUG)
 	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/sqlite3
@@ -390,6 +398,10 @@ post-install-UNIONVTAB-on:
 	${MKDIR} ${STAGEDIR}${DATADIR}
 	${INSTALL_LIB} ${WRKSRC}/unionvtab.so ${STAGEDIR}${DATADIR}
 
+post-install-ZIPFILE-on:
+	${MKDIR} ${STAGEDIR}${DATADIR}
+	${INSTALL_LIB} ${WRKSRC}/zipfile.so ${STAGEDIR}${DATADIR}
+
 # for compares with checksum from of the site
 sha1: fetch
 .if defined(SHA1) && !empty(SHA1)
@@ -401,7 +413,7 @@ sha1: fetch
 testfixture: build
 	cd "${WRKSRC}" && ${MAKE} ${.TARGET}
 
-test quicktest: build testfixture
+test quicktest: testfixture
 	[ -d "${WRKSRC}" ] && ( \
 		cd "${WRKSRC}" && \
 		${CHMOD} o+w ${TEST_PERMISSION_CHANGED} && \

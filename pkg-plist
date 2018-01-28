@@ -15,4 +15,5 @@ lib/libsqlite3.a
 %%REGEXP%%%%DATADIR%%/regexp.so
 %%SPELLFIX%%%%DATADIR%%/spellfix.so
 %%UNIONVTAB%%%%DATADIR%%/unionvtab.so
+%%ZIPFILE%%%%DATADIR%%/zipfile.so
 libdata/pkgconfig/sqlite3.pc
