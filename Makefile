@@ -82,6 +82,11 @@ OPTIONS_DEFINE+=	NULL_TRIM
 NULL_TRIM_DESC=		Omits NULL columns at the ends of rows
 NULL_TRIM_CPPFLAGS=	-DSQLITE_ENABLE_NULL_TRIM=1
 
+# http://www.sqlite.org/compile.html#enable_offset_sql_func
+OPTIONS_DEFINE+=	OFFSET
+OFFSET_DESC=		Enabled the sqlite_offset() SQL function
+OFFSET_CPPFLAGS=	-DSQLITE_ENABLE_OFFSET_SQL_FUNC=1
+
 # https://www.sqlite.org/compile.html#secure_delete
 OPTIONS_DEFINE+=	SECURE_DELETE
 OPTIONS_DEFAULT+=	SECURE_DELETE # (since 41.0) used by www/firefox et al.
