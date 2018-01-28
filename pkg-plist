@@ -10,6 +10,7 @@ lib/libsqlite3.so
 lib/libsqlite3.a
 %%TCL_EXT%%lib/tcl%%TCL_VER%%/sqlite3/libtclsqlite3.so
 %%TCL_EXT%%lib/tcl%%TCL_VER%%/sqlite3/pkgIndex.tcl
+%%APPENDVFS%%%%DATADIR%%/appendvfs.so
 %%CSV%%%%DATADIR%%/csv.so
 %%FILEIO%%%%DATADIR%%/fileio.so
 %%REGEXP%%%%DATADIR%%/regexp.so

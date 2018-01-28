@@ -136,6 +136,12 @@ OPTIONS_GROUP+=		EXTG
 OPTIONS_DEFAULT+=
 EXTG_DESC=		Amalgamation or external extensions
 
+# https://sqlite.org/src/file/ext/misc/appendvfs.c
+# http://sqlite.org/vfs.html#shim
+OPTIONS_GROUP_EXTG+=	APPENDVFS
+APPENDVFS_DESC=		Allows appended DB to the end of other file
+APPENDVFS_IMPLIES=	EXTENSION
+
 # https://www.sqlite.org/csv.html
 OPTIONS_GROUP_EXTG+=	CSV
 CSV_DESC=		Reading CSV file as virtual table
@@ -331,6 +337,9 @@ post-configure:
 post-build-ANALYZER-on:
 	cd ${WRKSRC} && ${MAKE} sqlite3_analyzer
 
+post-build-APPENDVFS-on:
+	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/appendvfs.c -o ${WRKSRC}/appendvfs.so
+
 post-build-CSV-on:
 	${CC} ${CFLAGS} -I${WRKSRC} -fPIC -DPIC -shared ${WRKSRC}/ext/misc/csv.c -o ${WRKSRC}/csv.so
 
@@ -371,6 +380,10 @@ post-install-EXTENSION-off:
 
 post-install-ANALYZER-on:
 	${INSTALL_PROGRAM} ${WRKSRC}/sqlite3_analyzer ${STAGEDIR}${PREFIX}/bin
+
+post-install-APPENDVFS-on:
+	${MKDIR} ${STAGEDIR}${DATADIR}
+	${INSTALL_LIB} ${WRKSRC}/appendvfs.so ${STAGEDIR}${DATADIR}
 
 post-install-CSV-on:
 	${MKDIR} ${STAGEDIR}${DATADIR}
