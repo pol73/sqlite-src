@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	sqlite
-PORTVERSION=	3.22.0
+PORTVERSION=	3.24.0
 CATEGORIES=	local databases
 MASTER_SITES=	https://www.sqlite.org/2018/ http://www2.sqlite.org/2018/ http://www3.sqlite.org/2018/
 DISTNAME=	${PORTNAME}-src-${PORTVERSION:C/\.([[:digit:]])[[:>:]]/0\1/g:S/.//g}00
@@ -92,6 +92,16 @@ OPTIONS_DEFINE+=	SECURE_DELETE
 OPTIONS_DEFAULT+=	SECURE_DELETE # (since 41.0) used by www/firefox et al.
 SECURE_DELETE_DESC=	Overwrite deleted information with zeros
 SECURE_DELETE_CPPFLAGS=	-DSQLITE_SECURE_DELETE=1
+
+# https://www.sqlite.org/compile.html#enable_sorter_references
+OPTIONS_DEFINE+=	SORT_REF
+SORT_REF_DESC=		To use references in the sorter
+SORT_REF_CPPFLAGS=	-DSQLITE_ENABLE_SORTER_REFERENCES=1
+
+# https://www.sqlite.org/compile.html#enable_deserialize
+OPTIONS_DEFINE+=	SER1
+SER1_DESC=		Enable the sqlite3_[de]serialize() interface
+SER1_CPPFLAGS=		-DSQLITE_ENABLE_DESERIALIZE=1
 
 # https://www.sqlite.org/lang_corefunc.html#soundex
 OPTIONS_DEFINE+=	SOUNDEX
