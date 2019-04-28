@@ -1,9 +1,9 @@
 # $FreeBSD$
 
 PORTNAME=	sqlite
-PORTVERSION=	3.24.0
+PORTVERSION=	3.28.0
 CATEGORIES=	local databases
-MASTER_SITES=	https://www.sqlite.org/2018/ http://www2.sqlite.org/2018/ http://www3.sqlite.org/2018/
+MASTER_SITES=	https://www.sqlite.org/2019/ http://www2.sqlite.org/2019/ http://www3.sqlite.org/2019/
 DISTNAME=	${PORTNAME}-src-${PORTVERSION:C/\.([[:digit:]])[[:>:]]/0\1/g:S/.//g}00
 
 MAINTAINER=	pavelivolkov@gmail.com
