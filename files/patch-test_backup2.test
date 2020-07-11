@@ -1,0 +1,11 @@
+--- test/backup2.test.orig	2020-07-09 12:09:48 UTC
++++ test/backup2.test
+@@ -143,7 +143,7 @@ do_test backup2-9 {
+ #
+ if {$tcl_platform(platform)=="windows"} {
+   set msg {cannot open source database: unable to open database file}
+-} elseif {[string match *BSD $tcl_platform(os)]} {
++} elseif {[string match {*[nty]BSD} $tcl_platform(os)]} {
+   set msg {restore failed: file is not a database}
+ } else {
+   set msg {cannot open source database: disk I/O error}
